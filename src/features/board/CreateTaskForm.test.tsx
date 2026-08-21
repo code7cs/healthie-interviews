@@ -56,7 +56,8 @@ describe('CreateTaskForm', () => {
     const assignee = screen.getByRole('combobox', { name: 'Character' });
 
     await user.type(title, '  Prepare client notes  ');
-    await user.selectOptions(assignee, '1');
+    await user.click(assignee);
+    await user.click(screen.getByRole('option', { name: 'Rick Sanchez' }));
     await user.click(screen.getByRole('button', { name: 'Add task' }));
 
     expect(onCreate).toHaveBeenCalledWith({
@@ -64,7 +65,7 @@ describe('CreateTaskForm', () => {
       assignee: characters[0],
     });
     expect(title).toHaveValue('');
-    expect(assignee).toHaveValue('');
+    expect(assignee).toHaveTextContent('Select a character');
   });
 
   it('explains when no character options are returned', () => {

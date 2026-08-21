@@ -3,6 +3,7 @@ import type {
   CharactersStatus,
   CharacterSummary,
 } from '../characters/characters.types';
+import { CharacterCombobox } from './CharacterCombobox';
 import styles from './board.module.css';
 
 export type CreateItemInput = {
@@ -104,34 +105,24 @@ export function CreateTaskForm({
         </label>
 
         <label className={styles.field}>
-          <span>Character</span>
-          <select
-            className={errors.character ? styles.invalidField : undefined}
+          <span id="character-label">Character</span>
+          <CharacterCombobox
+            characters={characters}
             value={characterId}
             disabled={characterStatus !== 'success' || characters.length === 0}
-            aria-invalid={Boolean(errors.character)}
-            aria-describedby={
-              errors.character ? 'character-error' : undefined
-            }
-            onChange={(event) => {
-              setCharacterId(event.target.value);
-              setErrors((current) => ({
-                ...current,
-                character: undefined,
-              }));
-            }}
-          >
-            <option value="">
-              {characterStatus === 'loading'
+            invalid={Boolean(errors.character)}
+            labelledBy="character-label"
+            describedBy={errors.character ? 'character-error' : undefined}
+            placeholder={
+              characterStatus === 'loading'
                 ? 'Loading characters…'
-                : 'Select a character'}
-            </option>
-            {characters.map((character) => (
-              <option key={character.id} value={character.id}>
-                {character.name}
-              </option>
-            ))}
-          </select>
+                : 'Select a character'
+            }
+            onChange={(nextCharacterId) => {
+              setCharacterId(nextCharacterId);
+              setErrors((current) => ({ ...current, character: undefined }));
+            }}
+          />
           {errors.character && (
             <span id="character-error" className={styles.fieldError}>
               {errors.character}
