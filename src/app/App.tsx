@@ -1,3 +1,4 @@
+import { KanbanBoard } from '../features/board/KanbanBoard';
 import { useCharacters } from '../features/characters/useCharacters';
 import styles from './App.module.css';
 
@@ -13,28 +14,12 @@ export function App() {
       </header>
 
       <main className={styles.main}>
-        <section className={styles.statusPanel} aria-labelledby="character-status">
-          <h2 id="character-status">Character directory</h2>
-
-          {characters.status === 'loading' && (
-            <p role="status">Loading character options…</p>
-          )}
-
-          {characters.status === 'error' && (
-            <div role="alert">
-              <p>{characters.error?.message}</p>
-              <button type="button" onClick={characters.retry}>
-                Retry
-              </button>
-            </div>
-          )}
-
-          {characters.status === 'success' && (
-            <p role="status">
-              {characters.data.length} characters are ready for assignment.
-            </p>
-          )}
-        </section>
+        <KanbanBoard
+          characters={characters.data}
+          characterStatus={characters.status}
+          characterError={characters.error?.message ?? null}
+          onRetryCharacters={characters.retry}
+        />
       </main>
     </div>
   );
