@@ -7,6 +7,7 @@ import {
 } from 'react';
 import type { CharacterSummary } from '../characters/characters.types';
 import styles from './board.module.css';
+import { LazyAvatar } from './LazyAvatar';
 
 type Props = {
   characters: CharacterSummary[];
@@ -166,10 +167,12 @@ export function CharacterCombobox({
       >
         <span className={styles.comboboxValue}>
           {selectedCharacter ? (
-            <img
-              className={styles.comboboxAvatar}
-              src={selectedCharacter.image}
+            <LazyAvatar
               alt=""
+              className={styles.comboboxAvatar}
+              eager
+              fallbackLabel={selectedCharacter.name}
+              src={selectedCharacter.image}
             />
           ) : (
             <span className={styles.comboboxPlaceholderAvatar} aria-hidden="true">
@@ -201,8 +204,9 @@ export function CharacterCombobox({
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => selectCharacter(index)}
             >
-              <img
+              <LazyAvatar
                 className={styles.comboboxOptionAvatar}
+                fallbackLabel={character.name}
                 src={character.image}
                 alt=""
               />

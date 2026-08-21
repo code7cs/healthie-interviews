@@ -119,11 +119,28 @@
 
 .comboboxAvatar,
 .comboboxOptionAvatar {
+  display: inline-grid;
+  place-items: center;
   flex: 0 0 auto;
   width: 1.8rem;
   height: 1.8rem;
   border: 2px solid #edf1f7;
   border-radius: 50%;
+  overflow: hidden;
+  object-fit: cover;
+  color: var(--color-accent);
+  background: #f0eefe;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.comboboxAvatar > img,
+.comboboxOptionAvatar > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
   object-fit: cover;
 }
 
