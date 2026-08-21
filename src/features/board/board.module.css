@@ -1,0 +1,163 @@
+.boardShell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.formPanel,
+.column {
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+}
+
+.formPanel {
+  padding: 1.25rem;
+}
+
+.sectionLabel {
+  margin: 0;
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.formPanel h2 {
+  margin: 0.25rem 0 1rem;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) minmax(12rem, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+
+.field input,
+.field select {
+  min-height: 2.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.65rem;
+  background: #fff;
+}
+
+.fieldError {
+  color: #a12b3f;
+  font-size: 0.84rem;
+}
+
+.primaryButton,
+.apiError button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.65rem;
+  color: #fff;
+  background: var(--color-accent);
+  font-weight: 800;
+}
+
+.primaryButton {
+  margin-top: 1.65rem;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.apiError {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.65rem;
+  color: #7d2133;
+  background: #fff0f3;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.column {
+  min-height: 20rem;
+  padding: 1rem;
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.columnHeader h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.itemList {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.emptyState {
+  color: var(--color-text-muted);
+}
+
+.card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.8rem;
+  background: #fff;
+}
+
+.avatar {
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.taskTitle,
+.assignee {
+  margin: 0;
+}
+
+.taskTitle {
+  font-size: 0.95rem;
+}
+
+.assignee {
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 760px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .primaryButton {
+    margin-top: 0;
+  }
+
+  .board {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(17rem, 82vw);
+    grid-template-columns: none;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+}
