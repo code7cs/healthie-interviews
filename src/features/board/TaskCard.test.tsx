@@ -1,5 +1,8 @@
 import { Feedback, KeyboardSensor, PointerSensor } from '@dnd-kit/dom';
-import { SortableKeyboardPlugin } from '@dnd-kit/dom/sortable';
+import {
+  OptimisticSortingPlugin,
+  SortableKeyboardPlugin,
+} from '@dnd-kit/dom/sortable';
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -34,11 +37,19 @@ describe('TaskCard', () => {
     render(<TaskCard item={item} columnId="todo" index={0} />);
 
     const options = useSortableMock.mock.calls[0]?.[0] as {
-      plugins?: unknown[];
+      plugins?: (defaults: unknown[]) => unknown[];
     };
 
-    expect(options.plugins).toEqual([
+    expect(options.plugins).toEqual(expect.any(Function));
+
+    const plugins = options.plugins?.([
       SortableKeyboardPlugin,
+      OptimisticSortingPlugin,
+    ]);
+
+    expect(plugins).toEqual([
+      SortableKeyboardPlugin,
+      OptimisticSortingPlugin,
       { plugin: Feedback, options: { feedback: 'move' } },
     ]);
   });

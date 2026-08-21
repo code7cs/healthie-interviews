@@ -1,5 +1,4 @@
 import { Feedback, KeyboardSensor, PointerSensor } from '@dnd-kit/dom';
-import { SortableKeyboardPlugin } from '@dnd-kit/dom/sortable';
 import { useSortable } from '@dnd-kit/react/sortable';
 import type { ColumnId, KanbanItem } from './board.types';
 import styles from './board.module.css';
@@ -26,7 +25,10 @@ export function TaskCard({ item, columnId, index }: Props) {
     accept: 'item',
     data: { columnId },
     sensors: TASK_CARD_SENSORS,
-    plugins: [SortableKeyboardPlugin, Feedback.configure({ feedback: 'move' })],
+    plugins: (defaults) => [
+      ...defaults,
+      Feedback.configure({ feedback: 'move' }),
+    ],
   });
 
   return (

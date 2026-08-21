@@ -90,16 +90,25 @@ export function KanbanBoard({
 
           const from = source.initialGroup;
           let to: unknown = source.group;
-          let targetIndex = source.index;
+          let targetIndex: number | undefined;
 
-          const targetColumn = target?.data?.columnId;
+          if (target && isSortable(target)) {
+            to = target.group;
+            targetIndex = target.index;
+          } else {
+            const targetColumn = target?.data?.columnId;
 
-          if (typeof targetColumn === 'string') {
-            to = targetColumn;
-            targetIndex = board[targetColumn as ColumnId].length;
+            if (isColumnId(targetColumn)) {
+              to = targetColumn;
+              targetIndex = board[targetColumn].length;
+            }
           }
 
-          if (!isColumnId(from) || !isColumnId(to)) {
+          if (
+            !isColumnId(from) ||
+            !isColumnId(to) ||
+            typeof targetIndex !== 'number'
+          ) {
             return;
           }
 
