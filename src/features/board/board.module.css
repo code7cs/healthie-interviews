@@ -2,6 +2,7 @@
   position: relative;
   display: grid;
   gap: 1.5rem;
+  min-width: 0;
 }
 
 .dragOverlay {
@@ -165,9 +166,22 @@
 }
 
 .comboboxChevron {
+  display: inline-grid;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  place-items: center;
   color: var(--color-text-muted);
-  font-size: 1.1rem;
-  line-height: 1;
+  font-size: 0;
+}
+
+.comboboxChevron::before {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-right: 0.12rem solid currentColor;
+  border-bottom: 0.12rem solid currentColor;
+  content: "";
+  transform: rotate(45deg);
 }
 
 .comboboxMenu {
@@ -270,6 +284,8 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+  min-width: 0;
+  max-width: 100%;
   overflow-anchor: none;
 }
 
@@ -427,6 +443,12 @@
   font-size: 0.94rem;
 }
 
+.column[aria-labelledby="column-done"] .taskTitle {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-text-muted);
+  text-decoration-thickness: 0.1em;
+}
+
 .assignee {
   margin-top: 0.25rem;
   color: var(--color-text-muted);
@@ -513,10 +535,12 @@
   }
 
   .board {
+    width: 100%;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(17rem, 82vw);
+    grid-auto-columns: minmax(17rem, calc(100% - 0.5rem));
     grid-template-columns: none;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
     scroll-snap-type: x proximity;
     padding-bottom: 0.5rem;
   }

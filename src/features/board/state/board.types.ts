@@ -1,4 +1,4 @@
-import type { CharacterSummary } from '../characters/characters.types';
+import type { CharacterSummary } from '../../characters/characters.types';
 
 export const COLUMN_IDS = ['todo', 'doing', 'done'] as const;
 

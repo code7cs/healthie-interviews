@@ -5,8 +5,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import type { CharacterSummary } from '../characters/characters.types';
-import styles from './board.module.css';
+import type { CharacterSummary } from '../../characters/characters.types';
+import styles from '../board.module.css';
 import { LazyAvatar } from './LazyAvatar';
 
 type Props = {

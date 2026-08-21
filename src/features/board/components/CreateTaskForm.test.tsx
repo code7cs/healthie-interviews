@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CreateTaskForm } from './CreateTaskForm';
-import styles from './board.module.css';
+import styles from '../board.module.css';
 
 const characters = [
   {

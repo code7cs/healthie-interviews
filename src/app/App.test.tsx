@@ -16,7 +16,7 @@ describe('App', () => {
     render(<App />);
 
     expect(
-      screen.getByRole('heading', { name: 'Character-powered Kanban' }),
+      screen.getByRole('heading', { name: 'Character Powered Kanban' }),
     ).toBeInTheDocument();
   });
 });

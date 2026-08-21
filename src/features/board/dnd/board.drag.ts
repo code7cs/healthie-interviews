@@ -1,4 +1,4 @@
-import { isColumnId, type BoardState, type ColumnId } from './board.types';
+import { isColumnId, type BoardState, type ColumnId } from '../state/board.types';
 
 export type DragPosition = {
   columnId: ColumnId;

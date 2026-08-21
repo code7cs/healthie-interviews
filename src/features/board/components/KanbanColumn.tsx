@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/react';
 import type { ReactNode } from 'react';
-import type { ColumnId } from './board.types';
-import styles from './board.module.css';
+import type { ColumnId } from '../state/board.types';
+import styles from '../board.module.css';
 
 type Props = {
   columnId: ColumnId;

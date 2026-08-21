@@ -2,7 +2,7 @@ import { act, cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ColumnId } from './board.types';
+import type { ColumnId } from './state/board.types';
 
 type SortableFixture = {
   id: string;

@@ -14,25 +14,25 @@ import type {
 import {
   boardReducer,
   createEmptyBoard,
-} from './board.reducer';
+} from './state/board.reducer';
 import {
   createDragMove,
   findItemLocation,
   type DragMove,
-} from './board.drag';
+} from './dnd/board.drag';
 import type {
   BoardAction,
   BoardState,
   ColumnId,
   KanbanItem,
-} from './board.types';
+} from './state/board.types';
 import {
   CreateTaskForm,
   type CreateItemInput,
-} from './CreateTaskForm';
-import { Celebration } from './Celebration';
-import { KanbanColumn } from './KanbanColumn';
-import { TaskCard, TaskCardPreview } from './TaskCard';
+} from './components/CreateTaskForm';
+import { Celebration } from './components/Celebration';
+import { KanbanColumn } from './components/KanbanColumn';
+import { TaskCard, TaskCardPreview } from './components/TaskCard';
 import styles from './board.module.css';
 
 const COLUMNS: Array<{ id: ColumnId; title: string }> = [

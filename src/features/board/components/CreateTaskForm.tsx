@@ -2,9 +2,9 @@ import { type FormEvent, useState } from 'react';
 import type {
   CharactersStatus,
   CharacterSummary,
-} from '../characters/characters.types';
+} from '../../characters/characters.types';
 import { CharacterCombobox } from './CharacterCombobox';
-import styles from './board.module.css';
+import styles from '../board.module.css';
 
 export type CreateItemInput = {
   title: string;
