@@ -1,6 +1,6 @@
 import { DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
-import { useReducer } from 'react';
+import { useCallback, useReducer, useState } from 'react';
 import type {
   CharactersStatus,
   CharacterSummary,
@@ -14,6 +14,7 @@ import {
   CreateTaskForm,
   type CreateItemInput,
 } from './CreateTaskForm';
+import { Celebration } from './Celebration';
 import { KanbanColumn } from './KanbanColumn';
 import { TaskCard } from './TaskCard';
 import styles from './board.module.css';
@@ -43,6 +44,11 @@ export function KanbanBoard({
     createEmptyBoard,
   );
 
+  const [celebrationId, setCelebrationId] = useState<string | null>(null);
+  const clearCelebration = useCallback(() => {
+    setCelebrationId(null);
+  }, []);
+
   function handleCreate(input: CreateItemInput) {
     dispatch({
       type: 'itemCreated',
@@ -55,6 +61,13 @@ export function KanbanBoard({
 
   return (
     <div className={styles.boardShell}>
+      {celebrationId && (
+        <Celebration
+          key={celebrationId}
+          onComplete={clearCelebration}
+        />
+      )}
+
       <CreateTaskForm
         characters={characters}
         characterStatus={characterStatus}
@@ -92,6 +105,10 @@ export function KanbanBoard({
 
           if (from === to && source.initialIndex === targetIndex) {
             return;
+          }
+
+          if (from !== 'done' && to === 'done') {
+            setCelebrationId(String(source.id) + ':' + Date.now());
           }
 
           dispatch({
