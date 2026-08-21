@@ -3,6 +3,7 @@ import { isSortable } from '@dnd-kit/react/sortable';
 import {
   type Dispatch,
   useCallback,
+  useEffect,
   useReducer,
   useRef,
   useState,
@@ -13,8 +14,11 @@ import type {
 } from '../characters/characters.types';
 import {
   boardReducer,
-  createEmptyBoard,
 } from './state/board.reducer';
+import {
+  loadBoardState,
+  saveBoardState,
+} from './state/board.storage';
 import {
   createDragMove,
   findItemLocation,
@@ -109,10 +113,14 @@ export function KanbanBoard({
   const [board, dispatch] = useReducer(
     boardReducer,
     undefined,
-    createEmptyBoard,
+    loadBoardState,
   );
   const dragSessionRef = useRef<DragSession | null>(null);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
+  useEffect(() => {
+    saveBoardState(board);
+  }, [board]);
+
   const activeItem = activeItemId
     ? findBoardItem(board, activeItemId)
     : null;
