@@ -17,6 +17,7 @@ export function TaskCard({ item, columnId, index }: Props) {
     group: columnId,
     type: 'item',
     accept: 'item',
+    data: { columnId },
     plugins: [SortableKeyboardPlugin, Feedback.configure({ feedback: 'move' })],
   });
 

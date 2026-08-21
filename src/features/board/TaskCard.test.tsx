@@ -42,4 +42,20 @@ describe('TaskCard', () => {
       { plugin: Feedback, options: { feedback: 'move' } },
     ]);
   });
+
+  it('includes its column in sortable target data for cross-column drops', () => {
+    useSortableMock.mockReturnValue({
+      ref: vi.fn(),
+      handleRef: vi.fn(),
+      isDragging: false,
+    });
+
+    render(<TaskCard item={item} columnId="doing" index={0} />);
+
+    const options = useSortableMock.mock.calls.at(-1)?.[0] as {
+      data?: { columnId?: string };
+    };
+
+    expect(options.data).toEqual({ columnId: 'doing' });
+  });
 });
