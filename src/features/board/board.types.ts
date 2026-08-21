@@ -13,6 +13,7 @@ export type KanbanItem = {
 export type BoardState = Record<ColumnId, KanbanItem[]>;
 
 export type BoardAction =
+  | { type: 'boardRestored'; board: BoardState }
   | { type: 'itemCreated'; item: KanbanItem }
   | {
       type: 'itemMoved';

@@ -70,6 +70,8 @@ export function boardReducer(
   action: BoardAction,
 ): BoardState {
   switch (action.type) {
+    case 'boardRestored':
+      return action.board;
     case 'itemCreated':
       return createItem(state, action.item);
     case 'itemMoved':

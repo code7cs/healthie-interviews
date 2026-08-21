@@ -36,9 +36,20 @@ export function KanbanColumn({
         <h2 id={headingId}>{title}</h2>
         <span aria-label={count + ' items'}>{count}</span>
       </header>
-      <div className={styles.itemList}>
+      <div
+        className={styles.itemList}
+        data-has-items={count > 0 ? 'true' : undefined}
+      >
         {count === 0 ? (
-          <p className={styles.emptyState}>Drop a task here</p>
+          isDropTarget ? (
+            <div
+              className={styles.dropPlaceholder}
+              data-testid="column-drop-placeholder"
+              aria-hidden="true"
+            />
+          ) : (
+            <p className={styles.emptyState}>Drop a task here</p>
+          )
         ) : (
           children
         )}

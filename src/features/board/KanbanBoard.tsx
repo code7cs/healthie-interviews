@@ -1,6 +1,12 @@
-import { DragDropProvider } from '@dnd-kit/react';
+import { DragDropProvider, DragOverlay } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
-import { useCallback, useReducer, useState } from 'react';
+import {
+  type Dispatch,
+  useCallback,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import type {
   CharactersStatus,
   CharacterSummary,
@@ -9,14 +15,24 @@ import {
   boardReducer,
   createEmptyBoard,
 } from './board.reducer';
-import { isColumnId, type ColumnId } from './board.types';
+import {
+  createDragMove,
+  findItemLocation,
+  type DragMove,
+} from './board.drag';
+import type {
+  BoardAction,
+  BoardState,
+  ColumnId,
+  KanbanItem,
+} from './board.types';
 import {
   CreateTaskForm,
   type CreateItemInput,
 } from './CreateTaskForm';
 import { Celebration } from './Celebration';
 import { KanbanColumn } from './KanbanColumn';
-import { TaskCard } from './TaskCard';
+import { TaskCard, TaskCardPreview } from './TaskCard';
 import styles from './board.module.css';
 
 const COLUMNS: Array<{ id: ColumnId; title: string }> = [
@@ -25,12 +41,64 @@ const COLUMNS: Array<{ id: ColumnId; title: string }> = [
   { id: 'done', title: 'Done' },
 ];
 
+type DragSession = {
+  itemId: string;
+  snapshot: BoardState;
+  hasMoved: boolean;
+  lastTargetId: string | null;
+};
+
 type Props = {
   characters: CharacterSummary[];
   characterStatus: CharactersStatus;
   characterError: string | null;
   onRetryCharacters: () => void;
 };
+
+function applyDragMove(
+  board: BoardState,
+  dispatch: Dispatch<BoardAction>,
+  session: DragSession,
+  target: unknown,
+): DragMove | null {
+  const move = createDragMove(board, session.itemId, target);
+
+  if (!move || session.lastTargetId === move.targetId) {
+    return null;
+  }
+
+  dispatch({
+    type: 'itemMoved',
+    itemId: move.itemId,
+    from: move.from,
+    to: move.to,
+    targetIndex: move.targetIndex,
+  });
+
+  session.hasMoved = true;
+  session.lastTargetId = move.targetId;
+  return move;
+}
+
+function movedIntoDone(
+  snapshot: BoardState,
+  board: BoardState,
+  itemId: string,
+) {
+  const before = findItemLocation(snapshot, itemId);
+  const after = findItemLocation(board, itemId);
+
+  return before?.columnId !== 'done' && after?.columnId === 'done';
+}
+
+function findBoardItem(
+  board: BoardState,
+  itemId: string,
+): KanbanItem | null {
+  const location = findItemLocation(board, itemId);
+
+  return location ? board[location.columnId][location.index] : null;
+}
 
 export function KanbanBoard({
   characters,
@@ -43,6 +111,11 @@ export function KanbanBoard({
     undefined,
     createEmptyBoard,
   );
+  const dragSessionRef = useRef<DragSession | null>(null);
+  const [activeItemId, setActiveItemId] = useState<string | null>(null);
+  const activeItem = activeItemId
+    ? findBoardItem(board, activeItemId)
+    : null;
 
   const [celebrationId, setCelebrationId] = useState<string | null>(null);
   const clearCelebration = useCallback(() => {
@@ -77,49 +150,102 @@ export function KanbanBoard({
       />
 
       <DragDropProvider
+        onDragStart={(event) => {
+          const { source } = event.operation;
+
+          if (!isSortable(source)) {
+            dragSessionRef.current = null;
+            setActiveItemId(null);
+            return;
+          }
+
+          const itemId = String(source.id);
+          dragSessionRef.current = {
+            itemId,
+            snapshot: board,
+            hasMoved: false,
+            lastTargetId: null,
+          };
+          setActiveItemId(itemId);
+        }}
+        onDragOver={(event) => {
+          const { source, target } = event.operation;
+          const session = dragSessionRef.current;
+
+          if (
+            !isSortable(source) ||
+            !session ||
+            session.itemId !== String(source.id)
+          ) {
+            return;
+          }
+
+          applyDragMove(board, dispatch, session, target);
+        }}
         onDragEnd={(event) => {
+          const session = dragSessionRef.current;
+
           if (event.canceled) {
+            if (session) {
+              dispatch({
+                type: 'boardRestored',
+                board: session.snapshot,
+              });
+            }
+
+            dragSessionRef.current = null;
+            setActiveItemId(null);
             return;
           }
 
           const { source, target } = event.operation;
 
           if (!isSortable(source)) {
+            dragSessionRef.current = null;
+            setActiveItemId(null);
             return;
           }
 
-          const from = source.initialGroup;
-          let to: unknown = source.group;
-          let targetIndex = source.index;
+          const itemId = String(source.id);
+          const activeSession =
+            session && session.itemId === itemId
+              ? session
+              : {
+                  itemId,
+                  snapshot: board,
+                  hasMoved: false,
+                  lastTargetId: null,
+                };
+          const hadMoved = activeSession.hasMoved;
+          const move = applyDragMove(
+            board,
+            dispatch,
+            activeSession,
+            target,
+          );
 
-          const targetColumn = target?.data?.columnId;
-
-          if (typeof targetColumn === 'string') {
-            to = targetColumn;
-            targetIndex = board[targetColumn as ColumnId].length;
+          if (
+            move &&
+            move.from !== 'done' &&
+            move.to === 'done'
+          ) {
+            setCelebrationId(itemId + ':' + Date.now());
+          } else if (
+            hadMoved &&
+            movedIntoDone(activeSession.snapshot, board, itemId)
+          ) {
+            setCelebrationId(itemId + ':' + Date.now());
           }
 
-          if (!isColumnId(from) || !isColumnId(to)) {
-            return;
-          }
-
-          if (from === to && source.initialIndex === targetIndex) {
-            return;
-          }
-
-          if (from !== 'done' && to === 'done') {
-            setCelebrationId(String(source.id) + ':' + Date.now());
-          }
-
-          dispatch({
-            type: 'itemMoved',
-            itemId: String(source.id),
-            from,
-            to,
-            targetIndex,
-          });
+          dragSessionRef.current = null;
+          setActiveItemId(null);
         }}
       >
+        <DragOverlay
+          className={styles.dragOverlay}
+        >
+          {activeItem ? <TaskCardPreview item={activeItem} /> : null}
+        </DragOverlay>
         <div className={styles.board} aria-label="Kanban board">
           {COLUMNS.map((column) => (
             <KanbanColumn
