@@ -161,3 +161,28 @@
     padding-bottom: 0.5rem;
   }
 }
+
+.card[data-dragging] {
+  opacity: 0.55;
+  box-shadow: 0 16px 30px rgb(23 32 51 / 18%);
+}
+
+.column[data-drop-target] {
+  border-color: var(--color-accent);
+  background: #f8f7ff;
+}
+
+.dragHandle {
+  align-self: center;
+  padding: 0.35rem;
+  border: 0;
+  border-radius: 0.4rem;
+  color: var(--color-text-muted);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
