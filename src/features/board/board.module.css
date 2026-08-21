@@ -57,6 +57,11 @@
   background: #fff;
 }
 
+.field input.invalidField,
+.field select.invalidField {
+  border-color: var(--color-danger);
+}
+
 .field input[aria-invalid="true"],
 .field select[aria-invalid="true"] {
   border-color: var(--color-danger);

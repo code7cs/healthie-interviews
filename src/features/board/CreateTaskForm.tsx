@@ -86,6 +86,7 @@ export function CreateTaskForm({
         <label className={styles.field}>
           <span>Task title</span>
           <input
+            className={errors.title ? styles.invalidField : undefined}
             value={title}
             maxLength={120}
             aria-invalid={Boolean(errors.title)}
@@ -105,6 +106,7 @@ export function CreateTaskForm({
         <label className={styles.field}>
           <span>Character</span>
           <select
+            className={errors.character ? styles.invalidField : undefined}
             value={characterId}
             disabled={characterStatus !== 'success' || characters.length === 0}
             aria-invalid={Boolean(errors.character)}

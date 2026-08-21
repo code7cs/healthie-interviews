@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CreateTaskForm } from './CreateTaskForm';
+import styles from './board.module.css';
 
 const characters = [
   {
@@ -28,6 +29,13 @@ describe('CreateTaskForm', () => {
 
     expect(screen.getByText('Enter a task title.')).toBeInTheDocument();
     expect(screen.getByText('Choose a character.')).toBeInTheDocument();
+
+    expect(screen.getByRole('textbox', { name: /Task title/ })).toHaveClass(
+      styles.invalidField,
+    );
+    expect(screen.getByRole('combobox', { name: /Character/ })).toHaveClass(
+      styles.invalidField,
+    );
   });
 
   it('submits trimmed input and resets the fields', async () => {
