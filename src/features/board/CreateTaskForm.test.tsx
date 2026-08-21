@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CreateTaskForm } from './CreateTaskForm';
+import styles from './board.module.css';
 
 const characters = [
   {
@@ -28,6 +29,13 @@ describe('CreateTaskForm', () => {
 
     expect(screen.getByText('Enter a task title.')).toBeInTheDocument();
     expect(screen.getByText('Choose a character.')).toBeInTheDocument();
+
+    expect(screen.getByRole('textbox', { name: /Task title/ })).toHaveClass(
+      styles.invalidField,
+    );
+    expect(screen.getByRole('combobox', { name: /Character/ })).toHaveClass(
+      styles.invalidField,
+    );
   });
 
   it('submits trimmed input and resets the fields', async () => {
@@ -48,7 +56,8 @@ describe('CreateTaskForm', () => {
     const assignee = screen.getByRole('combobox', { name: 'Character' });
 
     await user.type(title, '  Prepare client notes  ');
-    await user.selectOptions(assignee, '1');
+    await user.click(assignee);
+    await user.click(screen.getByRole('option', { name: 'Rick Sanchez' }));
     await user.click(screen.getByRole('button', { name: 'Add task' }));
 
     expect(onCreate).toHaveBeenCalledWith({
@@ -56,7 +65,7 @@ describe('CreateTaskForm', () => {
       assignee: characters[0],
     });
     expect(title).toHaveValue('');
-    expect(assignee).toHaveValue('');
+    expect(assignee).toHaveTextContent('Select a character');
   });
 
   it('explains when no character options are returned', () => {

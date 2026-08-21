@@ -7,6 +7,8 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --color-accent: #6558d3;
+  --color-accent-strong: #5145b8;
+  --color-danger: #a12b3f;
   --color-text: #172033;
   --color-text-muted: #5f6b7d;
   --color-surface: #ffffff;

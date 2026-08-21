@@ -1,4 +1,6 @@
-import { useReducer } from 'react';
+import { DragDropProvider } from '@dnd-kit/react';
+import { isSortable } from '@dnd-kit/react/sortable';
+import { useCallback, useReducer, useState } from 'react';
 import type {
   CharactersStatus,
   CharacterSummary,
@@ -7,11 +9,12 @@ import {
   boardReducer,
   createEmptyBoard,
 } from './board.reducer';
-import type { ColumnId } from './board.types';
+import { isColumnId, type ColumnId } from './board.types';
 import {
   CreateTaskForm,
   type CreateItemInput,
 } from './CreateTaskForm';
+import { Celebration } from './Celebration';
 import { KanbanColumn } from './KanbanColumn';
 import { TaskCard } from './TaskCard';
 import styles from './board.module.css';
@@ -41,6 +44,11 @@ export function KanbanBoard({
     createEmptyBoard,
   );
 
+  const [celebrationId, setCelebrationId] = useState<string | null>(null);
+  const clearCelebration = useCallback(() => {
+    setCelebrationId(null);
+  }, []);
+
   function handleCreate(input: CreateItemInput) {
     dispatch({
       type: 'itemCreated',
@@ -53,6 +61,13 @@ export function KanbanBoard({
 
   return (
     <div className={styles.boardShell}>
+      {celebrationId && (
+        <Celebration
+          key={celebrationId}
+          onComplete={clearCelebration}
+        />
+      )}
+
       <CreateTaskForm
         characters={characters}
         characterStatus={characterStatus}
@@ -61,20 +76,70 @@ export function KanbanBoard({
         onCreate={handleCreate}
       />
 
-      <div className={styles.board} aria-label="Kanban board">
-        {COLUMNS.map((column) => (
-          <KanbanColumn
-            key={column.id}
-            columnId={column.id}
-            title={column.title}
-            count={board[column.id].length}
-          >
-            {board[column.id].map((item) => (
-              <TaskCard key={item.id} item={item} />
-            ))}
-          </KanbanColumn>
-        ))}
-      </div>
+      <DragDropProvider
+        onDragEnd={(event) => {
+          if (event.canceled) {
+            return;
+          }
+
+          const { source, target } = event.operation;
+
+          if (!isSortable(source)) {
+            return;
+          }
+
+          const from = source.initialGroup;
+          let to: unknown = source.group;
+          let targetIndex = source.index;
+
+          const targetColumn = target?.data?.columnId;
+
+          if (typeof targetColumn === 'string') {
+            to = targetColumn;
+            targetIndex = board[targetColumn as ColumnId].length;
+          }
+
+          if (!isColumnId(from) || !isColumnId(to)) {
+            return;
+          }
+
+          if (from === to && source.initialIndex === targetIndex) {
+            return;
+          }
+
+          if (from !== 'done' && to === 'done') {
+            setCelebrationId(String(source.id) + ':' + Date.now());
+          }
+
+          dispatch({
+            type: 'itemMoved',
+            itemId: String(source.id),
+            from,
+            to,
+            targetIndex,
+          });
+        }}
+      >
+        <div className={styles.board} aria-label="Kanban board">
+          {COLUMNS.map((column) => (
+            <KanbanColumn
+              key={column.id}
+              columnId={column.id}
+              title={column.title}
+              count={board[column.id].length}
+            >
+              {board[column.id].map((item, index) => (
+                <TaskCard
+                  key={item.id}
+                  item={item}
+                  columnId={column.id}
+                  index={index}
+                />
+              ))}
+            </KanbanColumn>
+          ))}
+        </div>
+      </DragDropProvider>
     </div>
   );
 }

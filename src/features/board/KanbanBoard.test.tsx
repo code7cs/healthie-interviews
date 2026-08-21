@@ -28,10 +28,8 @@ describe('KanbanBoard', () => {
       screen.getByRole('textbox', { name: 'Task title' }),
       'Prepare client notes',
     );
-    await user.selectOptions(
-      screen.getByRole('combobox', { name: 'Character' }),
-      '1',
-    );
+    await user.click(screen.getByRole('combobox', { name: 'Character' }));
+    await user.click(screen.getByRole('option', { name: 'Rick Sanchez' }));
     await user.click(screen.getByRole('button', { name: 'Add task' }));
 
     const todo = screen.getByRole('region', { name: 'To Do' });
