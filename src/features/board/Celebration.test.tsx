@@ -23,4 +23,13 @@ describe('Celebration', () => {
 
     expect(onComplete).toHaveBeenCalledOnce();
   });
+
+  it('renders a non-interactive confetti layer', () => {
+    render(<Celebration onComplete={vi.fn()} />);
+
+    const confettiLayer = screen.getByTestId('confetti-layer');
+
+    expect(confettiLayer).toHaveAttribute('aria-hidden', 'true');
+    expect(confettiLayer.querySelectorAll('span')).toHaveLength(16);
+  });
 });

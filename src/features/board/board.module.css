@@ -242,62 +242,71 @@
 
 .celebration {
   position: fixed;
-  z-index: 10;
-  top: 1.25rem;
-  left: 50%;
-  display: flex;
-  gap: 0.55rem;
-  align-items: center;
-  padding: 0.8rem 1rem;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.confettiLayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.confettiPiece {
+  position: absolute;
+  top: -1.25rem;
+  width: 0.7rem;
+  height: 1.1rem;
+  border-radius: 0.2rem;
+  animation: confettiFall 1.35s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.celebrationMessage {
+  position: relative;
+  z-index: 1;
+  padding: 0.9rem 1.3rem;
   border: 1px solid #c9f0d8;
   border-radius: 999px;
   color: #155c35;
   background: #effcf4;
   box-shadow: 0 16px 34px rgb(23 32 51 / 18%);
-  transform: translateX(-50%);
-  animation: celebrate 1.4s ease both;
+  animation: celebrationMessage 1.4s ease both;
 }
 
-.sparkOne,
-.sparkTwo,
-.sparkThree {
-  color: #24a35a;
-  animation: sparkle 700ms ease infinite alternate;
-}
-
-.sparkTwo {
-  animation-delay: 100ms;
-}
-
-.sparkThree {
-  animation-delay: 200ms;
-}
-
-@keyframes celebrate {
+@keyframes confettiFall {
   0% {
     opacity: 0;
-    transform: translate(-50%, -12px) scale(0.94);
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-drift), 115vh, 0) rotate(720deg);
+  }
+}
+
+@keyframes celebrationMessage {
+  0% {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.94);
   }
 
   18%,
   80% {
     opacity: 1;
-    transform: translate(-50%, 0) scale(1);
+    transform: translateY(0) scale(1);
   }
 
   100% {
     opacity: 0;
-    transform: translate(-50%, -8px) scale(0.98);
-  }
-}
-
-@keyframes sparkle {
-  from {
-    transform: translateY(2px) rotate(-8deg) scale(0.85);
-  }
-
-  to {
-    transform: translateY(-2px) rotate(8deg) scale(1.15);
+    transform: translateY(-0.5rem) scale(0.98);
   }
 }
 
@@ -326,17 +335,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .column,
-  .celebration,
-  .sparkOne,
-  .sparkTwo,
-  .sparkThree {
+  .column {
     animation: none;
     transition: none;
   }
 
-  .celebration {
-    opacity: 1;
-    transform: translateX(-50%);
+  .confettiLayer {
+    display: none;
+  }
+
+  .celebrationMessage {
+    animation: none;
   }
 }
