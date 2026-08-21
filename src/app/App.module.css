@@ -1,0 +1,35 @@
+.page {
+  min-height: 100vh;
+}
+
+.header,
+.main {
+  width: min(1180px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.header {
+  padding-block: 3rem 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--color-accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.header p:last-child {
+  max-width: 42rem;
+  color: var(--color-text-muted);
+}
+
+.main {
+  padding-bottom: 3rem;
+}
