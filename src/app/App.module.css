@@ -33,3 +33,24 @@
 .main {
   padding-bottom: 3rem;
 }
+
+.statusPanel {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: 0 12px 30px rgb(23 32 51 / 7%);
+}
+
+.statusPanel h2 {
+  margin-top: 0;
+}
+
+.statusPanel button {
+  padding: 0.65rem 0.9rem;
+  border: 0;
+  border-radius: 0.6rem;
+  color: #fff;
+  background: var(--color-accent);
+  font-weight: 700;
+}
