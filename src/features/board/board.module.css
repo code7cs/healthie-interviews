@@ -236,6 +236,7 @@
 }
 
 .primaryButton,
+.secondaryButton,
 .apiError button {
   min-height: 2.8rem;
   padding: 0.65rem 1rem;
@@ -253,6 +254,35 @@
 
 .primaryButton {
   margin-top: 1.55rem;
+}
+
+.formActions {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1.55rem;
+}
+
+.formActions .primaryButton {
+  margin-top: 0;
+}
+
+.secondaryButton {
+  color: var(--color-accent-strong);
+  background: #f0eefe;
+  border: 1px solid #d8d1ff;
+  box-shadow: none;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  color: var(--color-accent-strong);
+  background: #e7e3ff;
+  transform: translateY(-1px);
+}
+
+.secondaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .primaryButton:hover:not(:disabled),
@@ -345,7 +375,7 @@
 .card {
   position: relative;
   display: grid;
-  grid-template-columns: auto auto 1fr;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
   gap: 0.7rem;
   align-items: center;
   padding: 0.85rem;
@@ -426,6 +456,44 @@
   cursor: grabbing;
 }
 
+.deleteButton {
+  display: inline-grid;
+  width: 2rem;
+  height: 2rem;
+  align-self: center;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0.45rem;
+  color: var(--color-text-muted);
+  background: transparent;
+  opacity: 0;
+  cursor: pointer;
+  transition:
+    opacity 150ms ease,
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.card:hover .deleteButton,
+.card:focus-within .deleteButton {
+  opacity: 1;
+}
+
+.deleteButton svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.deleteButton:hover {
+  color: #fff;
+  background: var(--color-danger);
+}
 .avatar {
   flex: 0 0 auto;
   border: 2px solid #edf1f7;
@@ -534,6 +602,17 @@
     margin-top: 0;
   }
 
+  .deleteButton {
+    opacity: 1;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .formActions button {
+    width: 100%;
+  }
   .board {
     width: 100%;
     grid-auto-flow: column;
@@ -560,6 +639,7 @@
   .comboboxTrigger,
   .comboboxOption,
   .primaryButton,
+  .secondaryButton,
   .apiError button {
     transition: none;
   }

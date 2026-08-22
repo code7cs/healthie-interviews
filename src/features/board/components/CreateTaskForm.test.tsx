@@ -22,6 +22,8 @@ describe('CreateTaskForm', () => {
         characterError={null}
         onRetryCharacters={vi.fn()}
         onCreate={vi.fn()}
+        canReset={false}
+        onReset={vi.fn()}
       />,
     );
 
@@ -49,6 +51,8 @@ describe('CreateTaskForm', () => {
         characterError={null}
         onRetryCharacters={vi.fn()}
         onCreate={onCreate}
+        canReset={false}
+        onReset={vi.fn()}
       />,
     );
 
@@ -76,6 +80,8 @@ describe('CreateTaskForm', () => {
         characterError={null}
         onRetryCharacters={vi.fn()}
         onCreate={vi.fn()}
+        canReset={false}
+        onReset={vi.fn()}
       />,
     );
 
@@ -96,6 +102,8 @@ describe('CreateTaskForm', () => {
         characterError="Network unavailable"
         onRetryCharacters={onRetryCharacters}
         onCreate={vi.fn()}
+        canReset={false}
+        onReset={vi.fn()}
       />,
     );
 

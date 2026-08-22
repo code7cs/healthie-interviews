@@ -65,6 +65,21 @@ function createItem(state: BoardState, item: KanbanItem): BoardState {
   };
 }
 
+function deleteItem(state: BoardState, itemId: string): BoardState {
+  for (const columnId of ['todo', 'doing', 'done'] as ColumnId[]) {
+    const items = state[columnId];
+
+    if (items.some((item) => item.id === itemId)) {
+      return {
+        ...state,
+        [columnId]: items.filter((item) => item.id !== itemId),
+      };
+    }
+  }
+
+  return state;
+}
+
 export function boardReducer(
   state: BoardState,
   action: BoardAction,
@@ -72,8 +87,12 @@ export function boardReducer(
   switch (action.type) {
     case 'boardRestored':
       return action.board;
+    case 'boardReset':
+      return createEmptyBoard();
     case 'itemCreated':
       return createItem(state, action.item);
+    case 'itemDeleted':
+      return deleteItem(state, action.itemId);
     case 'itemMoved':
       return moveItem(
         state,

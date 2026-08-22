@@ -15,6 +15,7 @@ type Props = {
   item: KanbanItem;
   columnId: ColumnId;
   index: number;
+  onDelete?: (itemId: string) => void;
 };
 
 type HandleRef = (element: Element | null) => void;
@@ -22,9 +23,11 @@ type HandleRef = (element: Element | null) => void;
 function TaskCardContent({
   item,
   handleRef,
+  onDelete,
 }: {
   item: KanbanItem;
   handleRef?: HandleRef;
+  onDelete?: () => void;
 }) {
   return (
     <>
@@ -49,6 +52,23 @@ function TaskCardContent({
         <h3 className={styles.taskTitle}>{item.title}</h3>
         <p className={styles.assignee}>Assigned to {item.assignee.name}</p>
       </div>
+      {onDelete && (
+        <button
+          className={styles.deleteButton}
+          type="button"
+          aria-label={'Delete ' + item.title}
+          title="Delete task"
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            onDelete();
+          }}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 7h14M10 11v6m4-6v6M9 7l1-2h4l1 2m-9 0 .8 12h8.4L16 7" />
+          </svg>
+        </button>
+      )}
     </>
   );
 }
@@ -61,7 +81,7 @@ export function TaskCardPreview({ item }: { item: KanbanItem }) {
   );
 }
 
-export function TaskCard({ item, columnId, index }: Props) {
+export function TaskCard({ item, columnId, index, onDelete }: Props) {
   const {
     ref,
     handleRef,
@@ -88,7 +108,11 @@ export function TaskCard({ item, columnId, index }: Props) {
       data-drop-target={isDropTarget || undefined}
       data-testid="drop-target-card"
     >
-      <TaskCardContent item={item} handleRef={handleRef} />
+      <TaskCardContent
+        item={item}
+        handleRef={handleRef}
+        onDelete={onDelete ? () => onDelete(item.id) : undefined}
+      />
     </article>
   );
 }

@@ -146,4 +146,22 @@ describe('boardReducer', () => {
 
     expect(state).toEqual(snapshot);
   });
+
+  it('deletes an item from any column', () => {
+    const state = board({ doing: [item('a'), item('b')], done: [item('c')] });
+    const next = boardReducer(state, {
+      type: 'itemDeleted',
+      itemId: 'b',
+    });
+
+    expect(next.doing.map(({ id }) => id)).toEqual(['a']);
+    expect(next.done.map(({ id }) => id)).toEqual(['c']);
+  });
+
+  it('returns the original state when deleting an unknown item', () => {
+    const state = board({ todo: [item('a')] });
+    expect(
+      boardReducer(state, { type: 'itemDeleted', itemId: 'missing' }),
+    ).toBe(state);
+  });
 });

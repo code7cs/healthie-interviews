@@ -12,10 +12,9 @@ import type {
   CharactersStatus,
   CharacterSummary,
 } from '../characters/characters.types';
+import { boardReducer } from './state/board.reducer';
 import {
-  boardReducer,
-} from './state/board.reducer';
-import {
+  clearBoardState,
   loadBoardState,
   saveBoardState,
 } from './state/board.storage';
@@ -124,6 +123,7 @@ export function KanbanBoard({
   const activeItem = activeItemId
     ? findBoardItem(board, activeItemId)
     : null;
+  const hasTasks = Object.values(board).some((items) => items.length > 0);
 
   const [celebrationId, setCelebrationId] = useState<string | null>(null);
   const clearCelebration = useCallback(() => {
@@ -138,6 +138,22 @@ export function KanbanBoard({
         ...input,
       },
     });
+  }
+
+  function handleDelete(itemId: string) {
+    dispatch({
+      type: 'itemDeleted',
+      itemId,
+    });
+  }
+
+  function handleReset() {
+    if (!window.confirm('Reset the board and remove all tasks?')) {
+      return;
+    }
+
+    clearBoardState();
+    dispatch({ type: 'boardReset' });
   }
 
   return (
@@ -155,6 +171,8 @@ export function KanbanBoard({
         characterError={characterError}
         onRetryCharacters={onRetryCharacters}
         onCreate={handleCreate}
+        canReset={hasTasks}
+        onReset={handleReset}
       />
 
       <DragDropProvider
@@ -268,6 +286,7 @@ export function KanbanBoard({
                   item={item}
                   columnId={column.id}
                   index={index}
+                  onDelete={handleDelete}
                 />
               ))}
             </KanbanColumn>
